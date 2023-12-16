@@ -1,70 +1,137 @@
-# Getting Started with Create React App
+# Integrate Google Maps And AutoComplete Search
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+While working on one of my side projects, I've faced the challenge of integrating Google Maps into my application and allowing users to search for locations and add them to our database. I've named this feature "Select Your Location" in the form.
 
-## Available Scripts
+![Select your Location Feature](./images/image.png)
 
-In the project directory, you can run:
+## Requirements
 
-### `npm start`
+1. Set up a React Application: <br/>
+   `npx create-react-app google-map-integration`
+2. Google API key
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+   Note: Developer account on [Google Developer Console](https://console.cloud.google.com/) is required to access Maps JavaScript API
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+   - Login to your [Google Developer Console](https://console.cloud.google.com/) dashboard.
+   - Create New Project.
+     ![Create New Project Screen shot](./images/image-1.png)
+   - Navigate to APIs & Services.
+   - Then Credentials. Create Credentials.Select API Key
+     ![Create Credentials screen shot](./images/image-3.png)
 
-### `npm test`
+3. Maps JavaScript API
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   - Go To Enable API & Services
+   - Click Enable APIs And Services
+     ![Enable APIs And Services screen shot](./images/image-4.png)
+   - Search for Maps JavaScript API, Places API, Geocoding API, and enable all of them.
 
-### `npm run build`
+   > Note: Maps JavaScript API is free to use but you need to set up a billing account to get rid of the limitations and watermark that comes with it.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+4. [react-google-maps/api](https://www.npmjs.com/package/@react-google-maps/api) library
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   `npm i @react-google-maps/api`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   We are going to use this library to render google maps and use maps APIs.
 
-### `npm run eject`
+## Start Implementation
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Implementation Steps
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. Render basic Google Maps
+2. Add Google Map default Marker.
+3. Add places autocomplete search.
+4. handle selected address and get it's lat,lng values.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+#### Rendering Google Maps
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+![Alt text](image.png)
 
-## Learn More
+Import GoogleMap, useLoadScript from [react-google-maps/api](https://www.npmjs.com/package/@react-google-maps/api) <br/>
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Use 'useLoadScript' hook to load google maps api scripts.
+2. GoogleMap Component to render Map itself or any others components related to maps.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Add Default rendering Google Map values this values are required
 
-### Code Splitting
+1. mapContainerClassName --> css class name that specifies height and width of maps.
+2. center --> lat ,lng of center of the map in my case it's lat,lng for Cairo in Egypt.
+3. zoom --> inital zoom of the map
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+**App.css**
 
-### Analyzing the Bundle Size
+```css
+/* Container div height and width must be specified to run Maps Correctly */
+.App {
+  height: 100vh;
+  width: 100vw;
+}
+.Map {
+  height: 100vh;
+  width: 100vw;
+}
+/* map container height and width to be provided to GoogleMaps Component */
+.map_container {
+  height: 100%;
+  width: 100%;
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+**Map.js**
 
-### Making a Progressive Web App
+```javascript
+import { GoogleMap, useLoadScript } from "@react-google-maps/api";
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+import "../App.css";
 
-### Advanced Configuration
+const Map = () => {
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
+  });
+  const center = { lat: 30.0444, lng: 31.2357 };
+  return (
+    <div className="Map">
+      {!isLoaded ? (
+        <h3>Loading.....</h3>
+      ) : (
+        <GoogleMap
+          mapContainerClassName="map_container"
+          center={center}
+          zoom={10}
+        />
+      )}
+    </div>
+  );
+};
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+export default Map;
+```
 
-### Deployment
+**App.js**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```javascript
+import "./App.css";
+import Map from "./components/map";
 
-### `npm run build` fails to minify
+function App() {
+  return (
+    <div className="App">
+      <Map />
+    </div>
+  );
+}
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+export default App;
+```
+
+#### Implementing Autocomplete Search
+
+**To Be continue**
+
+#### Customizing Autocomplete Search
+
+**To Be continue**
+
+#### Handling Selected Locations
+
+**To Be continue**
