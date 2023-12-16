@@ -1,13 +1,12 @@
 # Integrate Google Maps And AutoComplete Search
 
-While working on one of my side project I'v faced challenge to Integrate google maps in my application and allow use to search for location and add it on our db.
-I called it select your location in the form.
+While working on one of my side projects, I've faced the challenge of integrating Google Maps into my application and allowing users to search for locations and add them to our database. I've named this feature "Select Your Location" in the form.
 
 ![Select your Location Feature](./images/image.png)
 
 ## Requirements
 
-1. React Application setup <br/>
+1. Set up a React Application: <br/>
    `npx create-react-app google-map-integration`
 2. Google API key
 
@@ -16,7 +15,7 @@ I called it select your location in the form.
    - Login to your [Google Developer Console](https://console.cloud.google.com/) dashboard.
    - Create New Project.
      ![Create New Project Screen shot](./images/image-1.png)
-   - Go to APIs & Services
+   - Navigate to APIs & Services.
    - Then Credentials. Create Credentials.Select API Key
      ![Create Credentials screen shot](./images/image-3.png)
 
@@ -25,7 +24,7 @@ I called it select your location in the form.
    - Go To Enable API & Services
    - Click Enable APIs And Services
      ![Enable APIs And Services screen shot](./images/image-4.png)
-   - Search For Maps JavaScript API, Places API, Geocoding API Enable All of them.
+   - Search for Maps JavaScript API, Places API, Geocoding API, and enable all of them.
 
    > Note: Maps JavaScript API is free to use but you need to set up a billing account to get rid of the limitations and watermark that comes with it.
 
